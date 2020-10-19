@@ -3,7 +3,7 @@ library(vegan)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
-
+test
 setwd("C:/Users/serva/Google Drive/1-Partage Ordis/M2/ASA/Projet")
 
 assoc <- read.table("association.txt", header = TRUE)
