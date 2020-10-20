@@ -1,9 +1,10 @@
 library(ade4)
 library(vegan)
 library(ggplot2)
+library(corrplot)
 library(tidyr)
 library(dplyr)
-test
+library(RVAideMemoire)
 setwd("C:/Users/serva/Google Drive/1-Partage Ordis/M2/ASA/Projet")
 
 assoc <- read.table("association.txt", header = TRUE)
@@ -25,44 +26,44 @@ hist(effectifs
      , ylab='Number of Species')
 
 
-################# Analyse des données environnementales ----
-# Transformation des données pour compatiblité ggplot2
+################# Analyse des donnÃ©es environnementales ----
+# Transformation des donnÃ©es pour compatiblitÃ© ggplot2
 env_data <- mil[-10] %>% 
   pivot_longer(cols = 1:10,  names_to = "Variable", values_to = "Y" ) %>%
   arrange(Variable)
 
 
-# Affichage ggplot2 boxplots et distribution des données sous forme de scatterplot
+# Affichage ggplot2 boxplots et distribution des donnÃ©es sous forme de scatterplot
 ggplot(env_data, aes(x = Variable, y = Y, colour = Variable))+
   geom_point(position = position_jitterdodge(dodge.width = 0.7),size = 2)+
   geom_boxplot(alpha = 0.5)
 
 # ACP : 
-# Matrice des corrélations
+# Matrice des corrÃ©lations
 mcor <- cor(mil)
 corrplot(mcor, method = "number", type = "upper", order = "hclust", tl.col = "black")
 
 data_ACP <- mil[,-10]
 View(data_ACP)
 
-# Réalisation de l'ACP
+# RÃ©alisation de l'ACP
 acp_env <- dudi.pca(data_ACP, scannf = FALSE, nf = 2)
 acp_env$eig # Valeurs propres brutes 
 acp_env$eig*100/sum(acp_env$eig) # Valeurs propres en pourcentage
-s.label(acp_env$li, boxes = FALSE) # Affichage des stations dans le nouveau plan formé par l'acp
+s.label(acp_env$li, boxes = FALSE) # Affichage des stations dans le nouveau plan formÃ© par l'acp
 s.corcircle(acp_env$co) ## Affichage des variables environnementales dans le nouveau plan de l'acp
 
 iner_acp_env <- inertia.dudi(acp_env, col.inertia = TRUE, row.inertia = TRUE)
-iner_acp_env$col.abs # Récupération des contributions absolues pour les colonnes (ie les variables environnementales)
+iner_acp_env$col.abs # RÃ©cupÃ©ration des contributions absolues pour les colonnes (ie les variables environnementales)
 
 seuil = 1/length(iner_acp_env$col.abs[,1])*100
 seuil
 
-row.names(iner_acp_env$col.abs)[which(iner_acp_env$col.abs[,1] > seuil)] # Récupération des variables qui contribuent à l'axe 1
-row.names(iner_acp_env$col.abs)[which(iner_acp_env$col.abs[,2] > seuil)] # Récupération des variables qui contribuent à l'axe 2
+row.names(iner_acp_env$col.abs)[which(iner_acp_env$col.abs[,1] > seuil)] # RÃ©cupÃ©ration des variables qui contribuent Ã  l'axe 1
+row.names(iner_acp_env$col.abs)[which(iner_acp_env$col.abs[,2] > seuil)] # RÃ©cupÃ©ration des variables qui contribuent Ã  l'axe 2
 
 
-# Réalisation de la CAH sur l'ACP
+# RÃ©alisation de la CAH sur l'ACP
 dist_env <- dist.quant(acp_env$li,1)
 dendo <- hclust(dist_env,"ward.D2")
 plot(dendo$height, type="s")
@@ -74,10 +75,10 @@ abline(h = 6.7)
 decoup <- cutree(dendo, 6)
 decoup
 
-s.class(acp_env$li,as.factor(decoup), clabel = 0.5) # Remarque : pour le cluster 6, seulement présence de deux stations donc pas bien visible sous l'étiquette. Changer le clabel à 0 pour pouvoir voir les points.
+s.class(acp_env$li,as.factor(decoup), clabel = 0.5) # Remarque : pour le cluster 6, seulement prÃ©sence de deux stations donc pas bien visible sous l'Ã©tiquette. Changer le clabel Ã  0 pour pouvoir voir les points.
 
-# Affichage des étiquettes qui correspondent 
-indice_axe1 <- which(iner_apc_env$col.abs[,1] > seuil)
+# Affichage des Ã©tiquettes qui correspondent 
+indice_axe1 <- which(iner_acp_env$col.abs[,1] > seuil)
 s.label(acp_env$co[indice_axe1,], boxes = FALSE, add.plot = TRUE)
 
 indice_axe2 <- which(iner_acp_env$col.abs[,2] > seuil)
@@ -86,7 +87,7 @@ s.label(acp_env$co[indice_axe2,], boxes=TRUE, add.plot = TRUE, clabel = 0.8)
 
 
 
-#################### AFC sur le tableau des occurences d'espèces#################### 
+#################### AFC sur le tableau des occurences d'espÃ¨ces#################### 
 
 afc_flo <- dudi.coa(flo, scannf = FALSE, nf = 2)
 summary(afc_flo)
@@ -96,7 +97,7 @@ s.label(afc_flo$co)
 
 iner_afc_flo <- inertia.dudi(afc_flo, col.inertia = TRUE, row.inertia = TRUE)
 a = format(iner_afc_flo$col.abs,scientific = FALSE)
-seuil_AFC<-1/min(c(nrow(flo),ncol(AFC_flo)))*100
+seuil_AFC<-1/min(c(nrow(flo),ncol(afc_flo)))*100
 
 which(iner_afc_flo$col.abs[,1] > seuil_AFC)
 
@@ -115,10 +116,52 @@ decoup
 
 s.class(afc_flo$li,as.factor(decoup))
 
-# Affichage des étiquettes qui correspondent 
+# Affichage des Ã©tiquettes qui correspondent 
 indice_axe1 <- which(iner_afc_flo$col.abs[,1] > seuil)
 s.label(afc_flo$co[indice_axe1,], boxes = FALSE)
 
 indice_axe2 <- which(iner_afc_flo$col.abs[,2] > seuil)
 s.label(afc_flo$co[indice_axe2,], boxes=TRUE, add.plot = TRUE)
 
+#############coinertia####################
+afc_flo #already done before
+acp_coinertia_env <- dudi.pca(data_ACP, row.w = afc_flo$lw, scannf = FALSE, nf = 2) #weight the PCA row with the CA row weights
+coi <- coinertia(acp_coinertia_env, afc_flo, scannf = FALSE, nf=2) #selection of 2 axis
+coi
+
+randtest(coi,nrepet=1000)
+plot(randtest(coi), main = "Monte-Carlo test") #the coinertia analysis is significant
+
+
+iner=inertia.dudi(coi,col.inertia=T,row.inertia=T)
+iner
+
+#In particular : 
+abscoiE=iner$col.abs #get the absolute contribution of each environmental variable on each axis
+abscoiE
+selectE=rbind(abscoiE[abscoiE[,1]>(100/10),], abscoiE[abscoiE[,2]>(100/10),]) #variable which contributes the most to the axis (threshold of 10%)
+selectE
+
+abscoiS=iner$row.abs #get the absolute contribution of each species on each axis
+abscoiS
+selectS=rbind(abscoiS[abscoiS[,1]>5,], abscoiS[abscoiS[,2]>5,]) #species which contributes the most to the axis (threshold of 5%)
+selectS
+
+plot(coi)
+
+#représentations plus précises (PAS FORCEMENT BIEN FAITES !!!!!!!!!)
+#plot the correlation circle of the first table:
+MVA.plot(coi,"corr",space=1) 
+s.corcircle(coi$c1,box = FALSE, grid = TRUE,  possub = "bottomleft",cgrid = 0, fullcircle = TRUE, add.plot = FALSE)
+#plot the correlation circle of the second table:
+MVA.plot(coi,"corr",space=2) 
+s.arrow(coi$l1,boxes=FALSE,add.plot=F)
+#correlation between pairs of axes (of the 2 correlation circles): 2 points clouds lead to 2 correlation circles: 2 first axes more or less correlated and so on
+MVA.synt(coi)
+#plot of the stations
+MVA.plot(coi,space=1) #to see stations from the first table
+MVA.plot(coi,space=2) #to see stations from the second table
+s.match(coi$mX, coi$mY) #to see changes associated with changing table, permet de faire des classes de stations ! 
+fac=cbind(1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5)
+fac=as.factor(sapply(fac, factor))
+s.match.class(coi$mX, coi$mY,fac,col1 = rep("BLUE",nlevels(fac)),label =levels(fac))
