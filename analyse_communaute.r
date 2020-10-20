@@ -75,3 +75,4 @@ s.label(afc_flo$co[indice_axe1,], boxes = FALSE)
 indice_axe2 <- which(iner_afc_flo$col.abs[,2] > seuil)
 s.label(afc_flo$co[indice_axe2,], boxes=TRUE, add.plot = TRUE)
 
+
