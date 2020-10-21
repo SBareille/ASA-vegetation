@@ -1,0 +1,29 @@
+setwd("C:/Users/serva/Google Drive/1-Partage Ordis/M2/ASA/Projet")
+library(RColorBrewer)
+coord <- read.table("coord.txt", header = TRUE)
+
+stations_name <- as.data.frame(row.names(coord))
+stations <- cbind(stations_name, coord, assoc)
+
+stations_map <- ggplot(stations, aes(x=coord[,1], y=coord[,2], label=rownames(stations))) + geom_text() + geom_label()
+stations_map
+
+stations_map_color <- ggplot(stations, aes(x=x, y=y, label=rownames(stations), colour=factor(association))) + 
+  geom_text() + 
+  #scale_colour_manual(values = c("darkgrey","black","red","blue","lightblue1","aquamarine4","darkorchid","darkorange")) +
+  scale_color_brewer(palette = "Set2") +
+  #scale_colour_discrete(l = 40) +
+  geom_label(size=8)
+stations_map_color       
+
+# get the most represented species and map their distributions
+# Still in progress !!
+effectifs_ordered <- cbind(colnames(flo),as.data.frame(effectifs))
+effectifs_ordered <- effectifs_ordered[order(effectifs_ordered[,2],decreasing=T), ]
+effectifs_ordered
+
+most_represented_species <- cbind(coord,flo[,c(1,19,13,4,20,18,37,3, 32)])
+most_represented_species
+
+
+stations_assoc <- cbind(stations, )
