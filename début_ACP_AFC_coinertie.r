@@ -92,7 +92,7 @@ asso <- assoc %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
 s.label(acp_env$li) # affiche les labels de l'ACP
-s.class(acp_env$li,as.factor(decoup_asso), col = 1:7,add.plot=T) # ajoute les groupes liees aux associations
+s.class(acp_env$li, as.factor(decoup_asso), col = 1:7, label = c("C1","C2","C3","C4","C5","C6","C7"),add.plot=T) # ajoute les groupes liees aux associations
 
 
 
@@ -132,6 +132,16 @@ s.label(afc_flo$co[indice_axe1,], boxes = FALSE)
 
 indice_axe2 <- which(iner_afc_flo$col.abs[,2] > seuil)
 s.label(afc_flo$co[indice_axe2,], boxes=TRUE, add.plot = TRUE)
+
+#  decoupe des stations en fonction des associations #
+asso <- assoc %>%
+  mutate(
+    group = dense_rank(association) # crée une colonne si la station "C1" alors donne le rang "1"
+  ) %>%
+  select(group)
+decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
+s.label(afc_fl$li) # affiche les labels de l'ACP
+s.class(afc_fl$li,as.factor(decoup_asso), col = 1:7, label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # ajoute les groupes liees aux associations
 
 #############coinertia####################
 afc_flo #already done before
