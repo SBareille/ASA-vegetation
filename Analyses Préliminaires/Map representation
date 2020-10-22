@@ -1,29 +1,108 @@
 setwd("C:/Users/serva/Google Drive/1-Partage Ordis/M2/ASA/Projet")
 library(RColorBrewer)
 coord <- read.table("coord.txt", header = TRUE)
+assoc <- read.table("association.txt", header = TRUE)
+mil <- read.table("mil.txt",header = TRUE)
+names(mil)[c(5,6,7,10)] <- c("Mg.","Na..100g","K.","Na..l") #rename the columns because there is a lecture problem if we don't
 
+#### Spatial representation of stations
+#bof on peut le supprimer !!! on a les mêmes infos avec la representation des assoc
+s.label(coord, addaxes = FALSE, include.origin = FALSE) #station positions
+area.plot(coord)
+
+
+### Spatial representation of associations
+#create a data frame with stations_name, coord and assoc 
 stations_name <- as.data.frame(row.names(coord))
-stations <- cbind(stations_name, coord, assoc)
-
-stations_map <- ggplot(stations, aes(x=coord[,1], y=coord[,2], label=rownames(stations))) + geom_text() + geom_label()
-stations_map
-
-stations_map_color <- ggplot(stations, aes(x=x, y=y, label=rownames(stations), colour=factor(association))) + 
+stations_assoc <- cbind(stations_name, coord, assoc)
+stations_assoc
+#map
+stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(stations_assoc), colour=factor(association))) + 
   geom_text() + 
   #scale_colour_manual(values = c("darkgrey","black","red","blue","lightblue1","aquamarine4","darkorchid","darkorange")) +
   scale_color_brewer(palette = "Set2") +
   #scale_colour_discrete(l = 40) +
   geom_label(size=8)
-stations_map_color       
+stations_assoc_map
 
-# get the most represented species and map their distributions
-# Still in progress !!
-effectifs_ordered <- cbind(colnames(flo),as.data.frame(effectifs))
-effectifs_ordered <- effectifs_ordered[order(effectifs_ordered[,2],decreasing=T), ]
-effectifs_ordered
+### Spatial representation of each environemental variables
+#create a data frame with stations_name, coord and the deviations to the mean of each observations of each variables (for more lisibility)
+mean_mil <- apply(X = mil, c(2), mean)
+mil_deviated <- data.frame(matrix(ncol=ncol(mil),nrow=nrow(mil), dimnames=list(NULL, colnames(mil))))
+for (j in 1:ncol(mil)) {
+  for (i in 1:nrow(mil)) {
+    mil_deviated[i,j] <- mil[i,j] - mean_mil[j]}
+    }
+stations_mil_deviated <- cbind(stations_name, coord, mil_deviated)
 
-most_represented_species <- cbind(coord,flo[,c(1,19,13,4,20,18,37,3, 32)])
-most_represented_species
+#map the environmental variables
+clay_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Clay), color = I("black"), fill = as.factor(sign(Clay)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Clay")
+clay_map
 
+silt_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Silt), color = I("black"), fill = as.factor(sign(Silt)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Silt")
+silt_map
 
-stations_assoc <- cbind(stations, )
+sand_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Sand), color = I("black"), fill = as.factor(sign(Sand)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Sand")
+sand_map
+
+K2O_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(K2O), color = I("black"), fill = as.factor(sign(K2O)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("K2O")
+K2O_map
+
+Mg_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Mg.), color = I("black"), fill = as.factor(sign(Mg.)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Mg++")
+Mg_map
+
+Na100_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Na..100g), color = I("black"), fill = as.factor(sign(Na..100g)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Na+/100g")
+Na100_map
+
+K_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(K.), color = I("black"), fill = as.factor(sign(K.)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("K+")
+K_map
+
+Conduc_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Conduc), color = I("black"), fill = as.factor(sign(Conduc)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Conductivity")
+Conduc_map
+
+Reten_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Reten_Capa), color = I("black"), fill = as.factor(sign(Reten_Capa)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Retention Capacity")
+Reten_map
+
+NaL_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Na..l), color = I("black"), fill = as.factor(sign(Na..l)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Na+/l")
+NaL_map
+
+Altitude_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Altitude), color = I("black"), fill = as.factor(sign(Altitude)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Altitude")
+Altitude_map
+
+#if we don't want to use deviation : 
+# clay_map <- ggplot(stations_mil, aes(x=x, y=y, label=rownames(stations_mil))) + 
+#   geom_point(aes(size=Clay))
+# clay_map
