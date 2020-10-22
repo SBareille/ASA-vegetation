@@ -12,33 +12,7 @@ coord <- read.table("coord.txt", header = TRUE)
 flo <- read.table("flo.txt",header = TRUE)
 mil <- read.table("mil.txt",header = TRUE)
 
-#################### flo INSPECTION ############################################
-
-names(flo)
-str(flo)
-effectifs=apply(X = flo, 2, sum)
-
-par(mfrow=c(1,1))
-hist(effectifs
-     ,breaks=20
-     , col='red'
-     , xlab='Species effectif'
-     , ylab='Number of Species')
-
-
-################# Analyse des donnÃ©es environnementales ----
-# Transformation des donnÃ©es pour compatiblitÃ© ggplot2
-env_data <- mil[-10] %>% 
-  pivot_longer(cols = 1:10,  names_to = "Variable", values_to = "Y" ) %>%
-  arrange(Variable)
-
-
-# Affichage ggplot2 boxplots et distribution des donnÃ©es sous forme de scatterplot
-ggplot(env_data, aes(x = Variable, y = Y, colour = Variable))+
-  geom_point(position = position_jitterdodge(dodge.width = 0.7),size = 2)+
-  geom_boxplot(alpha = 0.5)
-
-# ACP : 
+############## ACP sur les variabels environnementales #########
 # Matrice des corrÃ©lations
 mcor <- cor(mil)
 corrplot(mcor, method = "number", type = "upper", order = "hclust", tl.col = "black")
