@@ -52,7 +52,7 @@ MVA.synt(rda_VG_vegan)
 #calculate with ADE4 the percentage of species explained by env:
 sum(rda_VG_ade4$eig)/sum(pca_VG_ade4$eig) # See later on 
 
-# 15,72  % of the flo community is explained by the environnement represented by Mg..", "K.", "Capa_Reten", "Altitude (p<0,01)    (21,9 % avant de faire le tri des variables corélées)
+# 15,72  % of the flo community is explained by the environnement represented by Mg..", "K.", "Capa_Reten", "Altitude (p<0,01)    (21,9 % avant de faire le tri des variables corÃ©lÃ©es)
 # The first axis represents 69,61 % of the constrained inertia (8,87/81,05 =10,9% du total) and is explained by and 
 
 
