@@ -22,8 +22,8 @@ knear4<-knearneigh(as.matrix(xy),4) # rook type of connection approximate by the
 knear4
 knn2nb(knear4)
 
-
-space_mat.bin<- nb2listw(knn2nb(knear4), style="B",zero.policy=TRUE) # spatial weighted matrix with binary weight formulation
+# spatial weighted matrix with binary weight formulation
+space_mat.bin<- nb2listw(knn2nb(knear4), style="B",zero.policy=TRUE) 
 
 # Calculation if Simpson Index
 Simpson=function(l){
@@ -36,7 +36,8 @@ Simpson=function(l){
   return(1-Si/(N*(N-1)))
 }
 
-SimFlo=apply(flo, 1, Simpson) # Calculation of Simpson Index for plant species
+# Calculation of Simpson Index for plant species
+SimFlo=apply(flo, 1, Simpson)
 data=cbind(data,SimFlo)
 
 
