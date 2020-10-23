@@ -63,3 +63,14 @@ plot(randtest(rda_VG_ade4)) # graphic representation of the randtest. Result : S
 inertia.dudi(rda_VG_ade4, col = TRUE, row = FALSE)
 
 plot(rda_VG_ade4, boxes = FALSE)
+
+#  RDA with association #
+asso <- assoc %>%
+  mutate(
+    group = dense_rank(association) # crée une colonne si la station "C1" alors donne le rang "1"
+  ) %>%
+  select(group)
+decoup_asso <- (t(asso))
+
+s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = c(1:7), col2 = c(1:7), label = c("","","","","","",""))
+title(main = "RDA with group of association")
