@@ -5,13 +5,13 @@ assoc <- read.table("association.txt", header = TRUE)
 mil <- read.table("mil.txt",header = TRUE)
 names(mil)[c(5,6,7,10)] <- c("Mg.","Na..100g","K.","Na..l") #rename the columns because there is a lecture problem if we don't
 
-#########################################################"### Spatial representation of stations
+#### Spatial representation of stations
 #bof on peut le supprimer !!! on a les mêmes infos avec la representation des assoc
 s.label(coord, addaxes = FALSE, include.origin = FALSE) #station positions
 area.plot(coord)
 
 
-########################################################### Spatial representation of associations
+### Spatial representation of associations
 #create a data frame with stations_name, coord and assoc 
 stations_name <- as.data.frame(row.names(coord))
 stations_assoc <- cbind(stations_name, coord, assoc)
@@ -22,10 +22,14 @@ stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(statio
   #scale_colour_manual(values = c("darkgrey","black","red","blue","lightblue1","aquamarine4","darkorchid","darkorange")) +
   scale_color_brewer(palette = "Set2") +
   #scale_colour_discrete(l = 40) +
-  geom_label(size=8)
+  geom_label(size=8)+
+  labs(title = "Spatial representation of asssociations", colour="Vegetal associations") +
+  theme(plot.title = element_text(size = 30), 
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15))
 stations_assoc_map
 
-###############################################"## Spatial representation of each environemental variables
+### Spatial representation of each environemental variables
 #create a data frame with stations_name, coord and the deviations to the mean of each observations of each variables (for more lisibility)
 mean_mil <- apply(X = mil, c(2), mean)
 mil_deviated <- data.frame(matrix(ncol=ncol(mil),nrow=nrow(mil), dimnames=list(NULL, colnames(mil))))
@@ -107,7 +111,6 @@ Altitude_map
 #   geom_point(aes(size=Clay))
 # clay_map
 
-#################################################  indices de diversité
 
 ###################  indices de diversité Simpson
 
@@ -158,7 +161,7 @@ Sim_deviated_map <- ggplot(stations_Sim_deviated, aes(x=x, y=y, label=rownames(s
        subtitle = "Deviation from the mean (mean = 0.82)")
 Sim_deviated_map
 
-####################  Shannon-Weiner diversity index
+#####################  Shannon-Weiner diversity index
 
 Shannon=function(l){
   H=rep(0,nrow(l))
@@ -192,7 +195,7 @@ Sha_deviated_map <- ggplot(stations_Sha_deviated, aes(x=x, y=y, label=rownames(s
      subtitle = "Deviation from the mean (mean = 1.65)")
 Sha_deviated_map
 
-########## Là j'ai ajouté l'indice de Pielou mais j'ai du mal à voir si ça vaut le coup de le représenter (écologiquement)
+# Là j'ai ajouté l'indice de Pielou mais j'ai du mal à voir si ça vaut le coup de le représenter (écologiquement)
 Pielou=function(f){#calcul de l'indice de Pielou
   H=Shannon(f)
   I=rep(0,length(H))
