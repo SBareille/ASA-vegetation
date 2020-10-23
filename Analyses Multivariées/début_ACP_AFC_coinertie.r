@@ -164,3 +164,13 @@ s.match(coi$mX, coi$mY) #to see changes associated with changing table, permet d
 fac=cbind(1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5)
 fac=as.factor(sapply(fac, factor))
 s.match.class(coi$mX, coi$mY,fac,col1 = rep("BLUE",nlevels(fac)),label =levels(fac))
+
+#  coinertia with association #
+asso <- assoc %>%
+  mutate(
+    group = dense_rank(association) # crée une colonne si la station "C1" alors donne le rang "1"
+  ) %>%
+  select(group)
+decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
+s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = c(1:7), col2 = c(1:7), label = c("","","","","","",""))
+title(main = "Coinertia with association group")
