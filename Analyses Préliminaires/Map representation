@@ -107,7 +107,9 @@ Altitude_map
 #   geom_point(aes(size=Clay))
 # clay_map
 
-#################################################  indices de diversité Simpson
+#################################################  indices de diversité
+
+###################  indices de diversité Simpson
 
 Simpson=function(l){
   N=sum(l)
@@ -120,7 +122,9 @@ Simpson=function(l){
 }
 
 Sim=apply(flo, 1, Simpson) # calcul de l'indice de Simpson pour les especes du jeu de donnes
-
+min(Sim)
+max (Sim)
+mean(Sim)
 # map Simpson 
 stations_Sim <- cbind(coord, Sim)
 
@@ -139,15 +143,10 @@ Sim_45_map <- ggplot(stations_Sim_45, aes(x=x, y=y, label=rownames(stations_Sim_
 Sim_45_map
 
 # map Simpson (par rapport à la moyenne) ATTENTION POUR LE MOMENT ON A GARDé station 45. à voir si on reprend cette partie
-mean_Sim <- 0
-for (i in 1:length(Sim)) {
-  mean_Sim <- mean_Sim + Sim[i]
-}
-mean_Sim <- mean_Sim / length(Sim)
 
-Sim_deviated <- v <- rep(0, length(Sim))
+Sim_deviated <- rep(0, length(Sim))
 for (i in 1:length(Sim)) {
-  Sim_deviated[i] <- Sim[i]-mean_Sim
+  Sim_deviated[i] <- Sim[i]-mean(Sim)
 }
 Sim_deviated
 stations_Sim_deviated <- cbind(coord, Sim_deviated)
@@ -155,5 +154,68 @@ stations_Sim_deviated <- cbind(coord, Sim_deviated)
 Sim_deviated_map <- ggplot(stations_Sim_deviated, aes(x=x, y=y, label=rownames(stations_Sim_deviated))) + 
   geom_point(shape=21, aes(size=abs(Sim_deviated), color = I("black"), fill = as.factor(sign(Sim_deviated)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Indice de Simpson")
+  labs(title = "Simpson diversity index",
+       subtitle = "Deviation from the mean (mean = 0.82)")
 Sim_deviated_map
+
+####################  Shannon-Weiner diversity index
+
+Shannon=function(l){
+  H=rep(0,nrow(l))
+  for (i in 1:nrow(l)){
+    for(j in 1:ncol(l)){
+      n=l[i,j]
+      if(n>0){
+        p=n/sum(l[,j])
+        H[i]=H[i]-(p)*log2(p)
+      }}} 
+  return(H)
+}
+
+Sha=Shannon(flo)
+Sha
+mean(Sha)
+min(Sha)
+max(Sha)
+
+Sha_deviated <- rep(0, length(Sha))
+for (i in 1:length(Sha)) {
+  Sha_deviated[i] <- Sha[i]-mean(Sha)
+}
+Sha_deviated
+stations_Sha_deviated <- cbind(coord, Sha_deviated)
+
+Sha_deviated_map <- ggplot(stations_Sha_deviated, aes(x=x, y=y, label=rownames(stations_Sha_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Sha_deviated), color = I("black"), fill = as.factor(sign(Sha_deviated)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  labs(title = "Shannon-Weiner diversity index",
+     subtitle = "Deviation from the mean (mean = 1.65)")
+Sha_deviated_map
+
+########## Là j'ai ajouté l'indice de Pielou mais j'ai du mal à voir si ça vaut le coup de le représenter (écologiquement)
+Pielou=function(f){#calcul de l'indice de Pielou
+  H=Shannon(f)
+  I=rep(0,length(H))
+  for(i in 1:length(H)){
+    I[i]=H[i]/max(H)
+  }
+  return(I)
+}
+
+Pie=Pielou(flo)
+mean(Pie)
+min(Pie)
+max(Pie)
+Pie_deviated <- rep(0, length(P))
+for (i in 1:length(Pie)) {
+  Pie_deviated[i] <- Pie[i]-mean(Pie)
+}
+Pie_deviated
+stations_Pie_deviated <- cbind(coord, Pie_deviated)
+
+Pie_deviated_map <- ggplot(stations_Pie_deviated, aes(x=x, y=y, label=rownames(stations_Pie_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Pie_deviated), color = I("black"), fill = as.factor(sign(Pie_deviated)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  labs(title = "Pielou’s evenness index",
+       subtitle = "Deviation from the mean (mean = 0.33)")
+Pie_deviated_map
