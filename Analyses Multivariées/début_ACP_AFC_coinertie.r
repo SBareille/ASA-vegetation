@@ -65,8 +65,10 @@ asso <- assoc %>%
   ) %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
-s.label(acp_env$li) # affiche les labels de l'ACP
-s.class(acp_env$li, as.factor(decoup_asso), col = 1:7, label = c("C1","C2","C3","C4","C5","C6","C7"),add.plot=T) # ajoute les groupes liees aux associations
+s.label(acp_env$li) # Station with CAP
+s.class(acp_env$li, as.factor(decoup_asso), col = 1:7, label = c("","","","","","","") , add.plot = TRUE) # add group of associations
+title(main = "CAP with association group") # add title
+legend(x= 4.5,y = 4,legend = c("C1","C2","C3","C4","C5","C6","C7"),col = 1:7, pch = 1) # add legend
 
 
 
@@ -114,8 +116,11 @@ asso <- assoc %>%
   ) %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
-s.label(afc_fl$li) # affiche les labels de l'ACP
-s.class(afc_fl$li,as.factor(decoup_asso), col = 1:7, label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # ajoute les groupes liees aux associations
+
+s.label(afc_flo$li) # station with AFC
+s.class(afc_flo$li,as.factor(decoup_asso), col = 1:7, label = c("","","","","","",""), add.plot=T) # add group of association
+title(main = "CA with association group") # add title
+legend(x= 1,y = 1,legend = c("C1","C2","C3","C4","C5","C6","C7"),col = 1:7, pch = 1) # add legend
 
 #############coinertia####################
 afc_flo #already done before
