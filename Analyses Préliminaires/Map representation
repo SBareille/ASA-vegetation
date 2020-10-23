@@ -5,13 +5,13 @@ assoc <- read.table("association.txt", header = TRUE)
 mil <- read.table("mil.txt",header = TRUE)
 names(mil)[c(5,6,7,10)] <- c("Mg.","Na..100g","K.","Na..l") #rename the columns because there is a lecture problem if we don't
 
-#### Spatial representation of stations
+#########################################################"### Spatial representation of stations
 #bof on peut le supprimer !!! on a les mêmes infos avec la representation des assoc
 s.label(coord, addaxes = FALSE, include.origin = FALSE) #station positions
 area.plot(coord)
 
 
-### Spatial representation of associations
+########################################################### Spatial representation of associations
 #create a data frame with stations_name, coord and assoc 
 stations_name <- as.data.frame(row.names(coord))
 stations_assoc <- cbind(stations_name, coord, assoc)
@@ -25,7 +25,7 @@ stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(statio
   geom_label(size=8)
 stations_assoc_map
 
-### Spatial representation of each environemental variables
+###############################################"## Spatial representation of each environemental variables
 #create a data frame with stations_name, coord and the deviations to the mean of each observations of each variables (for more lisibility)
 mean_mil <- apply(X = mil, c(2), mean)
 mil_deviated <- data.frame(matrix(ncol=ncol(mil),nrow=nrow(mil), dimnames=list(NULL, colnames(mil))))
@@ -106,3 +106,54 @@ Altitude_map
 # clay_map <- ggplot(stations_mil, aes(x=x, y=y, label=rownames(stations_mil))) + 
 #   geom_point(aes(size=Clay))
 # clay_map
+
+#################################################  indices de diversité Simpson
+
+Simpson=function(l){
+  N=sum(l)
+  Si = 0
+  for(i in l){
+    if(i>0){
+      Si=Si+(i*(i-1))
+    }}
+  return(1-Si/(N*(N-1)))
+}
+
+Sim=apply(flo, 1, Simpson) # calcul de l'indice de Simpson pour les especes du jeu de donnes
+
+# map Simpson 
+stations_Sim <- cbind(coord, Sim)
+
+Sim_map <- ggplot(stations_Sim, aes(x=x, y=y, label=rownames(stations_Sim))) + 
+  geom_point(shape=21, aes(size=abs(Sim), color = I("black"), fill = as.factor(sign(Sim)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Indice de Simpson")
+Sim_map
+#problem : la station 45 qui a indice à zéro tire tout vers le bas. Je l'enlève pour que ça soit plus joli
+stations_Sim_45 <- stations_Sim[-45,]
+
+Sim_45_map <- ggplot(stations_Sim_45, aes(x=x, y=y, label=rownames(stations_Sim_45))) + 
+  geom_point(aes(size=abs(Sim), color = I("black"))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Indice de Simpson")
+Sim_45_map
+
+# map Simpson (par rapport à la moyenne) ATTENTION POUR LE MOMENT ON A GARDé station 45. à voir si on reprend cette partie
+mean_Sim <- 0
+for (i in 1:length(Sim)) {
+  mean_Sim <- mean_Sim + Sim[i]
+}
+mean_Sim <- mean_Sim / length(Sim)
+
+Sim_deviated <- v <- rep(0, length(Sim))
+for (i in 1:length(Sim)) {
+  Sim_deviated[i] <- Sim[i]-mean_Sim
+}
+Sim_deviated
+stations_Sim_deviated <- cbind(coord, Sim_deviated)
+
+Sim_deviated_map <- ggplot(stations_Sim_deviated, aes(x=x, y=y, label=rownames(stations_Sim_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Sim_deviated), color = I("black"), fill = as.factor(sign(Sim_deviated)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Indice de Simpson")
+Sim_deviated_map
