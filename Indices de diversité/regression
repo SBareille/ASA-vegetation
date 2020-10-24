@@ -162,3 +162,94 @@ t=step(model_simpson,
 # 0.8844821523 -0.0020350490 -0.0346266956 -0.0737330884  0.0004495682  0.0237051286
 
 # Conclusion : Explained Varialbes does not follow a gausian distribution. 
+
+
+
+
+
+#Shannon
+par(mfrow=c(1,2))
+# Boxplot
+boxplot(Shannon_index_Flo
+        ,col='red'
+        ,ylab='Size')
+# Cleveland plot
+dotchart(Shannon_index_Flo
+         ,pch=16
+         ,col='#339966'
+         ,xlab='Size')
+# Conclusion : there is one value very low in comparaison of others
+
+par(mfrow=c(1,2))
+#Histogram
+hist(Shannon_index_Flo
+     ,breaks=8
+     , col='red'
+     , xlab='Size'
+     , ylab='Number')
+# Quantile-Quantile Plot
+qqnorm(Shannon_index_Flo
+       , col='red'
+       , pch=16)
+qqline(Shannon_index_Flo)
+
+# Conclusion : It's not better than Simpson but still not very normal
+
+#####  Relationships Y vs Xs #####
+par(mfrow=c(1,1))
+plot(Shannon_index_Flo~mil$Argile
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Limon
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Sable
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$K2O
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Mg..
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Na..l
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$K.
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Altitude
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Capa_Reten
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Conduc
+     , col='red'
+     , pch=16)
+plot(Shannon_index_Flo~mil$Na..100g
+     , col='red'
+     , pch=16)
+
+
+
+data_shannon = cbind(mil , Shannon_index_Flo )
+model_shannon<-lm( Shannon_index_Flo~. , data = data_simpson )
+summary(model_shannon)
+
+#drop1
+drop1(model_shannon,test='F')
+mod_2 <- lm(Shannon_index_Flo~Mg.. , data_simpson)
+summary(mod_2)
+# Coefficients:
+#   Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  0.431620   0.024948  17.301   <2e-16 ***
+#   Mg..        -0.004082   0.001591  -2.566   0.0119 *  
+
+#step
+t=step(model_shannon,
+       direction = c("both"))
+# (Intercept)       Argile        Limon          K2O         Mg..           K.   Capa_Reten 
+# 0.504519424 -0.001676074 -0.001677872 -0.019874404 -0.004243049  0.021584365  0.001941712 
+
+# Conclusion : Explained Varialbes does not follow a gausian distribution. 
