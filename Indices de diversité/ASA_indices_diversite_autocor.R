@@ -84,6 +84,7 @@ data=cbind(data,P)
 # Moran test on Pielou Index
 moran.test(data[,71] , space_mat.bin)
 
+#Autocorrelogram of Pielou Index
 cor4_piel<-sp.correlogram(knn2nb(knear4), data[,71], order=10, method="I",zero.policy=TRUE, style="B")
 print(cor4_piel,p.adjust.method="bonferonni")
 plot(cor4_piel,main="Moran autocorrelogram for Pielou Index (4 neighbors criterion)")
@@ -93,7 +94,7 @@ plot(cor4_piel,main="Moran autocorrelogram for Pielou Index (4 neighbors criteri
 
 
 
-# specifique fichness calculation
+# Specific richness calculation
 richness=function(station){
   counter = 0
   for (i in station){
