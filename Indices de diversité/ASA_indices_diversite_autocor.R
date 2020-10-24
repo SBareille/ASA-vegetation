@@ -87,3 +87,33 @@ moran.test(data[,71] , space_mat.bin)
 cor4_piel<-sp.correlogram(knn2nb(knear4), data[,71], order=10, method="I",zero.policy=TRUE, style="B")
 print(cor4_piel,p.adjust.method="bonferonni")
 plot(cor4_piel,main="Moran autocorrelogram for Pielou Index (4 neighbors criterion)")
+
+
+
+
+
+
+# specifique fichness calculation
+richness=function(station){
+  counter = 0
+  for (i in station){
+    if (i == 0){
+      counter = counter + 1
+    }
+  }
+  specific_richness = length(station)-counter
+  return(specific_richness)
+}
+
+# Calculation of Specific richness for plant species
+RichnessFlo=apply(flo, 1, richness)
+data=cbind(data,RichnessFlo)
+
+
+# Moran test on Specific richness
+moran.test(data[,72] , space_mat.bin)
+
+cor4_piel<-sp.correlogram(knn2nb(knear4), data[,72], order=10, method="I",zero.policy=TRUE, style="B")
+print(cor4_piel,p.adjust.method="bonferonni")
+plot(cor4_piel,main="Moran autocorrelogram for the specific richness (4 neighbors criterion)")
+
