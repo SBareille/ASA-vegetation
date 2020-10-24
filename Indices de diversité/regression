@@ -1,0 +1,164 @@
+# regression on diversity and richness index
+coord <- read.table("coord.txt", header = TRUE)
+flo <- read.table("flo.txt",header = TRUE)
+mil <- read.table("mil.txt",header = TRUE)
+#install.packages('MASS')
+#library('MASS')
+#install.packages('olsrr')
+#library('olsrr')
+
+
+# Our aim in this script is to see if the diversity index and the richness
+# of our sites can be explained by the environmental prametres
+
+#QUESTION: Which explanatory variables influence the Diversity of the given community ?
+# Dependent variables: Diversity indexes = Simpson - Shannon - Pielou - Richness
+# Explanatory variables: every environemental prametres measurements
+
+
+
+
+##### Calculation of the indexes ####
+#Simson    ( 1 out of 4 )
+Simson=function(l){    # This function calculates the index
+  N=sum(l)
+  Si = 0
+  for(i in l){
+    if(i>0){
+      Si=Si+(i*(i-1))
+    }}
+  return(1-Si/(N*(N-1)))
+}
+Simpson_index_Flo=apply(flo, 1, Simson)
+
+#Shannon  ( 2 out of 4 )
+Shannon=function(l){
+  N=sum(l)
+  Pi = NULL
+  SY=0
+  for(i in l){
+    if(i>0){
+      Pi=c(Pi,i/N)
+      SY=(i/N)*log2(i/N)
+    }}
+  return(-1*SY)
+}
+Shannon_index_Flo=apply(flo, 1, shan)
+
+#Pielou ( 3 out of 4 )
+Pielou=function(f){
+  H=Shannon(f)
+  I=rep(0,length(H))
+  for(i in 1:length(H)){
+    I[i]=H[i]/max(H)
+  }
+  return(I)
+}
+Pielou_index_Flo=Pielou(flo)
+
+
+# specifique richness 
+richness=function(station){
+  counter = 0
+  for (i in station){
+    if (i == 0){
+      counter = counter + 1
+    }
+  }
+  specific_richness = length(station)-counter
+  return(specific_richness)
+}
+
+Richness_Flo=apply(flo, 1, richness)
+
+
+
+
+##### Data - Exploration #####
+#Simpson
+par(mfrow=c(1,2))
+# Boxplot
+boxplot(Simpson_index_Flo
+        ,col='red'
+        ,ylab='Size')
+# Cleveland plot
+dotchart(Simpson_index_Flo
+         ,pch=16
+         ,col='#339966'
+         ,xlab='Size')
+# Conclusion : there is one value very low in comparaison of others
+
+par(mfrow=c(1,2))
+#Histogram
+hist(Simpson_index_Flo
+     ,breaks=8
+     , col='red'
+     , xlab='Size'
+     , ylab='Number')
+# Quantile-Quantile Plot
+qqnorm(Simpson_index_Flo
+       , col='red'
+       , pch=16)
+qqline(Simpson_index_Flo)
+
+# Conclusion : It's not quite good 
+
+#####  Relationships Y vs Xs #####
+par(mfrow=c(1,1))
+plot(Simpson_index_Flo~mil$Argile
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Limon
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Sable
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$K2O
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Mg..
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Na..l
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$K.
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Altitude
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Capa_Reten
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Conduc
+     , col='red'
+     , pch=16)
+plot(Simpson_index_Flo~mil$Na..100g
+     , col='red'
+     , pch=16)
+
+
+require(MASS)
+data_simpson = cbind(mil , Simpson_index_Flo )
+model_simpson<-lm( Simpson_index_Flo~. , data = data_simpson )
+summary(model_simpson)
+
+#drop1
+drop1(model_simpson,test='F')
+mod_2 <- lm(Simpson_index_Flo~K.+Altitude, data = data_simpson)
+summary(mod_2)
+# Coefficients:
+#   Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  0.864550   0.047402  18.239  < 2e-16 ***
+#   K.          -0.073871   0.015347  -4.813 5.65e-06 ***
+#   Altitude     0.019353   0.009993   1.937   0.0558 .  
+
+#step
+t=step(model_simpson,
+         direction = c("both"))
+# (Intercept)         Sable           K2O            K.         Na..l      Altitude 
+# 0.8844821523 -0.0020350490 -0.0346266956 -0.0737330884  0.0004495682  0.0237051286
+
+# Conclusion : Explained Varialbes does not follow a gausian distribution. 
