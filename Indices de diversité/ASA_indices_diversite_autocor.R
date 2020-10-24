@@ -118,3 +118,216 @@ cor4_piel<-sp.correlogram(knn2nb(knear4), data[,72], order=10, method="I",zero.p
 print(cor4_piel,p.adjust.method="bonferonni")
 plot(cor4_piel,main="Moran autocorrelogram for the specific richness (4 neighbors criterion)")
 
+
+
+#######################################################################################################
+#Moran Mais en Local (j'ai l'impression que c'est mieux car notre domaine d'étude est vraiment large)
+
+# avec pielou
+localI.pp1=localmoran(data[,71], space_mat.bin, p.adjust.method="bonferroni")
+localI.pp1[localI.pp1[,5]<0.05,]
+s.value(xy,localI.pp1[,1], ylim=c(min(data[,69])-15,max(data[,69])+15), xlim=c(min(data[,68])-15,max(data[,68])+15), sub="")
+
+
+# avec richesse
+localI.pp1=localmoran(data[,72], space_mat.bin, p.adjust.method="bonferroni")
+localI.pp1[localI.pp1[,5]<0.05,]
+s.value(xy,localI.pp1[,1], ylim=c(min(data[,69])-15,max(data[,69])+15), xlim=c(min(data[,68])-15,max(data[,68])+15), sub="")
+
+# Globalement y'a des zones plus homogene en terme de richesse et diversité mais en soit je vois pas trop ce que ça nous apporte de savoir ça...
+
+
+
+
+# location data 
+xy=data[,68:69]
+
+# Our points are not regularly distributed through space.We computed a neighbor relationship using several methods
+
+# example with Gabriel method:
+data.gab<-gabrielneigh(as.matrix(xy))
+s.label(xy,clabel=0, cpoint=1,neig=nb2neig(graph2nb(data.gab)))
+
+# truc écrit dans le script originel mais interessant : 
+# the part nb2neig(graph2nb(data.gab)) is necessary to translate the object from one package to another 
+# s.lable is a function from ade4 and yo need to translate your object from tripack->spdep->ade4
+
+
+
+# synthetic view of the neighbor relationship:
+graph2nb(data.gab)
+
+
+# Methode de Delaunay:
+# to compute a neighbor relationship using the delaunay triangulation method you should use this function using dirrectly the coordinates:
+data.tri<-tri2nb (xy)
+
+# graphic representation:
+s.label(xy,clabel=0,cpoint=1,neig=nb2neig(data.tri))
+
+# synthetic view:
+data.tri
+
+
+# encore un autre truc du même genre:
+
+# to compute a neighbor relationship using a distance criteria you should use this function 
+# using dirrectly the coordinates as a matrix and indicating the min and max of distance.
+# the max of distance is defined depending on your knowledge of the system or for different hypothesis you want to test:
+data.dnear<-dnearneigh(as.matrix(xy),0,30)
+# graphic representation:
+s.label(xy,clabel=0, cpoint=1,neig=nb2neig(data.dnear))
+# synthetic view:
+data.dnear
+
+# je capte pas trop pk on fait 3 trucs comme ça..
+
+
+# when comparing gabriel, triangulation and distance results: what would you say? 
+# va niker ta mere?
+
+# what kind of biological process does each criteria can represent?
+# et bah pk tu nous filles pas la reponse ? tas cru j'ai le temps d'ecrire en cours ? 
+
+# C'est le poids spatial avec diverses methodes de calcules (renommées)
+ponddatatri.bin <- nb2listw(data.tri, style="B",zero.policy=TRUE)
+ponddatagab.bin <- nb2listw(graph2nb(data.gab), style="B", zero.policy=TRUE)
+ponddatadnear.bin <- nb2listw(data.dnear, style="B",zero.policy=TRUE)
+
+# On teste avec Moran pour voir si c'est Pvalue < 0.05
+PVALUES = c()
+for (i in 57:67 ){
+  a = moran.test(data[,i], ponddatagab.bin, zero.policy=TRUE)$p.value
+  b = moran.test(data[,i], ponddatatri.bin, zero.policy=TRUE)$p.value
+  c = moran.test(data[,i], ponddatadnear.bin, zero.policy=TRUE)$p.value
+  PVALUES = c(PVALUES,names(data)[i],a,b,c)
+}
+for (i in 70:72 ){
+  a = moran.test(data[,i], ponddatagab.bin, zero.policy=TRUE)$p.value
+  b=moran.test(data[,i], ponddatatri.bin, zero.policy=TRUE)$p.value
+  c= moran.test(data[,i], ponddatadnear.bin, zero.policy=TRUE)$p.value
+  PVALUES = c(PVALUES,names(data)[i],a,b,c)
+}
+
+
+PVALUES
+# j'ai l'implression qu'il y a une forte autocorrelation spaciale pour tout le jeux de données. A la fois
+ # pour les fleurs et aussi pour les parametre phisico chimiques...
+
+
+# alors je tente un autre truc nouveaux là
+# Je crois que c'est pour chercher en un seul coup si y'a correlation dans le jeu de données
+
+# Dans le ''''cours'''' j'ai trouvé ça : 
+# Is there any similary between environmental variables of ponds explained by their geographical proximity?
+#   Mantel test: function mantel.rtest
+# m'enfin c'est pas clair , c'est pas détaillé, c'est ce foutre de notre geule sérieux
+
+# en gros on regarde les distance entre les stations, puis on compute les ressemblances phisico chimique et on regarde si les 
+# stations les plus proches se ressembles etc..
+
+geo = dist(xy)     # matrices des distances
+chim = dist(scale(data[,57:67]))   # matrice des ressemblance phisico chimiques
+# faut peut etre sortir les variables correlées qui doivent rajouter de l'auto cor ?
+
+r1 = mantel.rtest(geo,chim,nrepet=1000)  # le fameux teste ...
+
+r1  # p-value: 0.02297702
+plot(r1, main = "Mantel's test")
+
+# what can you conclude?
+# je sais pas. 
+
+
+
+
+
+
+##############Spatial modelling: practice######################
+
+# we have seen just before taht there is autocorrelation at different scale in the data of planta nd bird richnesses in Ille & vilaine
+# we are now interested in the relationship that could occur between plant richness and bird richness taking into account the spatial effect
+# we will use the queen criteria with standardized weight (why? because this is my choice.... you can try with other criteria): 
+
+# Ici je pense qu'on a pas comme la prof 2 jeux de données à comparer. Elle elle a genre richesse oiseaux et richesse plante
+# Elle regarde si ya même auto cor ou un truc dans le genre. Nous on a Richesse spécifique, Mais faudrait identifié  1  seul param pour tester avec
+
+div.knear8<-knearneigh(as.matrix(xy),8)
+pond8.stand<- nb2listw(knn2nb(div.knear8), style="W",zero.policy=TRUE)
+moran.test(data$RichnessFlo, pond8.stand)
+
+
+# Start with a linear model that explain bird richness with plant richness and check if residuals are spatially autocorrelated
+# Je choisis K car les Modeles lineraires de tout à l'heure le faisait ressortir
+lmO=lm(data$RichnessFlo~data$K.)   # j'ai plein de Warning je les comprends pas
+summary(lmO)
+moran.test(lmO$residuals,pond8.stand)  #p-value = 0.0002419 
+
+# what is the relationship estimated between plant and bird?  
+
+# are the residuals autocorrelated?  Je crois... 
+
+
+
+# to define which spatial models you have to do you have to perform the Lagrange multiplier diagnostic
+# using the linear model, and the spatial criteria
+lm.LMtests(lmO,pond8.stand, test="all")
+# which tests are significant?
+
+# so which model you must do?
+
+
+#### Je me suis arrété là
+
+
+
+# the function to performe the model is the one below, you use the same formula as for linear model 
+# but you add an argument concerning the spatial connection of your points
+lmsarD=sacsarlm(rich_ois~rich_pp,data=div35,pond8.stand)
+
+# before analysing the results : check if the residuals are always spatially autocorrelated
+ressar=lmsarD$residuals
+moran.test(ressar, pond8.stand, alternative="two.sided")
+# are they?
+
+# to analyze the result of your model:
+summary(lmsarD)
+
+# can you repace the estimated coefficients in the equation related to this model: y = ? W y + ?X + ? W e + ? ?
+# can you repace the estimated coefficients in the equation related to this model: y = 0.63 W y + ?X + -0.65643 W e + ? ?
+#??? c'est rrho , lambda       peut etre que beta c'est estimate
+# you can plot the results, and comapre with teh line obtained with the non spatial model:
+x11()
+plot(div35$rich_ois~div35$rich_pp, main="Relationship between plant and bird richnesses", xlab="plant richness", ylab="bird richness")
+abline(lm(lmsarD$fitted.values~div35$rich_pp),col="red")
+abline(lm(lmO$fitted.values~div35$rich_pp))
+
+# what to conclude?
+
+
+# however we have seen with local Moran index that the spatial autocorrelation was non stationary
+# now we will investigated if the relationship between plant and bird is the same everywhere in Ille & Vilaine
+
+# for that we used geographically weighted regression in order to estiamte a regression coefficient per point and map its value
+# for this function we do not use connection critria, 
+# R will use a kernel function to estimate the spatial weight of the connection between points (like in geastatistical tool of analysis)
+lmgwrD=gwr.est(rich_ois~rich_pp,data=div35,locs=xy)
+summary(lmgwrD)
+lmgwrD$beta
+
+
+
+# Phi: kernel bandwidth
+# RMSPE:  root square of error of the prediction based on bandwidth estimated
+# Beta:  matrix with the coefficients for each point (intercept line [1,] and regression coefficient line [2,])
+# Yhat:  model estimate
+# RMSE:  root square of error estimation 
+# Rsquare:  model fitting
+
+# what is the range of variation of the regression between bird richness and plant richness?
+
+#you can map the value of the coefficient:
+
+plot(xy)
+s.value(xy,lmgwrD$beta[2,],add.plot=T)
+
