@@ -82,7 +82,7 @@ P=Pielou(flo)
 data=cbind(data,P)
 
 # Moran test on Pielou Index
-moran.test(data[,70] , space_mat.bin)
+moran.test(data[,71] , space_mat.bin)
 
 cor4_piel<-sp.correlogram(knn2nb(knear4), data[,71], order=10, method="I",zero.policy=TRUE, style="B")
 print(cor4_piel,p.adjust.method="bonferonni")
