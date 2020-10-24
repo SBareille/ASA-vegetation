@@ -253,3 +253,108 @@ t=step(model_shannon,
 # 0.504519424 -0.001676074 -0.001677872 -0.019874404 -0.004243049  0.021584365  0.001941712 
 
 # Conclusion : Explained Varialbes does not follow a gausian distribution. 
+
+
+
+
+
+##### Data - Exploration #####
+#Richness
+par(mfrow=c(1,2))
+# Boxplot
+boxplot(Richness_Flo
+        ,col='red'
+        ,ylab='Size')
+# Cleveland plot
+dotchart(Richness_Flo
+         ,pch=16
+         ,col='#339966'
+         ,xlab='Size')
+# Conclusion : there are some values rather high in comparaison of others
+
+par(mfrow=c(1,2))
+#Histogram
+hist(Richness_Flo
+     ,breaks=8
+     , col='red'
+     , xlab='Size'
+     , ylab='Number')
+# Quantile-Quantile Plot
+qqnorm(Richness_Flo
+       , col='red'
+       , pch=16)
+qqline(Richness_Flo)
+
+# Conclusion : It's satisfactory
+
+
+#####  Relationships Y vs Xs #####
+par(mfrow=c(1,1))
+plot(Richness_Flo~mil$Argile
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Limon
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Sable
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$K2O
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Mg..
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Na..l
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$K.
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Altitude
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Capa_Reten
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Conduc
+     , col='red'
+     , pch=16)
+plot(Richness_Flo~mil$Na..100g
+     , col='red'
+     , pch=16)
+
+
+#require(MASS)
+
+
+data_richness = cbind(mil , Richness_Flo )
+model_richness<-lm( Richness_Flo~. , data = data_richness )
+summary(model_richness)
+
+#drop1
+drop1(model_richness,test='F')
+mod_2 <- lm(Richness_Flo~K.+Altitude+Conduc+Mg.., data = data_richness)
+summary(mod_2)
+drop1(mod_2,test='F')
+mod_fin <- lm(Richness_Flo~K.+Mg.., data = data_richness)
+summary(mod_fin)
+
+# Coefficients:
+#   Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  7.03930    0.78869   8.925 3.54e-14 ***
+#   K.          -1.62116    0.31480  -5.150 1.43e-06 ***
+#   Mg..         0.11336    0.05425   2.090   0.0393 *  
+
+#step
+t=step(model_richness,
+       direction = c("both"))
+# Step:  AIC=201.26
+# Richness_Flo ~ Limon + Sable + Mg.. + K. + Conduc + Na..l
+
+# Conclusion : Explained Varialbe seems explained by K and MG
+# yet:
+plot(Richness_Flo~mil$K.
+     , col='red'
+     , pch=16)
+# does not provide satisfactory feedback
