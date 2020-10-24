@@ -358,3 +358,9 @@ plot(Richness_Flo~mil$K.
      , col='red'
      , pch=16)
 # does not provide satisfactory feedback
+
+
+
+# ya ça diapo 109 du pdf de Pascaline, mais ya pas les explications qui vont avec... dommage ça à l'aire stillé
+lm.LMtests(model_shannon,space_mat.bin, test="all")
+lm.LMtests(model_richness,space_mat.bin, test="all")
