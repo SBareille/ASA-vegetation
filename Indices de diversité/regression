@@ -359,8 +359,14 @@ plot(Richness_Flo~mil$K.
      , pch=16)
 # does not provide satisfactory feedback
 
+# jt'ente un truc : 
 
+data=cbind(flo,mil,coord)
+xy=data[,68:69] #extraction of the coordinates
+knear4<-knearneigh(as.matrix(xy),4) # rook type of connection approximate by the 4th nearest neighbor criteria
+knn2nb(knear4)
+space_mat.bin<- nb2listw(knn2nb(knear4), style="B",zero.policy=TRUE) 
 
 # ya ça diapo 109 du pdf de Pascaline, mais ya pas les explications qui vont avec... dommage ça à l'aire stillé
 lm.LMtests(model_shannon,space_mat.bin, test="all")
-lm.LMtests(model_richness,space_mat.bin, test="all")
+lm.LMtests(model_richness,space_mat.bin, test="all")  # Pvalue significative
