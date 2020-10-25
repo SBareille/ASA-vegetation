@@ -68,79 +68,90 @@ stations_assoc_map
 
 ##### Spatial representation of each environemental variables
 #create a data frame with stations_name, coord and the deviations to the mean of each observations of each variables (for more lisibility)
-mean_mil <- apply(X = mil, c(2), mean)
-mil_deviated <- data.frame(matrix(ncol=ncol(mil),nrow=nrow(mil), dimnames=list(NULL, colnames(mil))))
-for (j in 1:ncol(mil)) {
-  for (i in 1:nrow(mil)) {
-    mil_deviated[i,j] <- mil[i,j] - mean_mil[j]}
+mean_env <- apply(X = env, c(2), mean)
+env_deviated <- data.frame(matrix(ncol=ncol(env),nrow=nrow(env), dimnames=list(NULL, colnames(env))))
+for (j in 1:ncol(env)) {
+  for (i in 1:nrow(env)) {
+    env_deviated[i,j] <- env[i,j] - mean_env[j]}
 }
-stations_mil_deviated <- cbind(stations_name, coord, mil_deviated)
+stations_env_deviated <- cbind(stations_name, coord, env_deviated)
 
 #map the environmental variables
-clay_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+clay_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Clay), color = I("black"), fill = as.factor(sign(Clay)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Clay")
+  labs(title = "Clay (%granulometry)",
+       subtitle = "Deviation from the mean (mean = 60.38 %)")
 clay_map
 
-silt_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+silt_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Silt), color = I("black"), fill = as.factor(sign(Silt)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Silt")
+  labs(title = "Silt (%granulometry)",
+       subtitle = "Deviation from the mean (mean = 30,02 %)")
 silt_map
 
-sand_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+sand_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Sand), color = I("black"), fill = as.factor(sign(Sand)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Sand")
+  labs(title = "Sand (%granulometry)",
+       subtitle = "Deviation from the mean (mean = 8,49 %)")
 sand_map
 
-K2O_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+K2O_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(K2O), color = I("black"), fill = as.factor(sign(K2O)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("K2O")
+  labs(title = "K20 (%granulometry)",
+       subtitle = "Deviation from the mean (mean = 1,32)")
 K2O_map
 
-Mg_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
-  geom_point(shape=21, aes(size=abs(Mg.), color = I("black"), fill = as.factor(sign(Mg.)))) +
+Mg_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
+  geom_point(shape=21, aes(size=abs(Mg..), color = I("black"), fill = as.factor(sign(Mg..)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Mg++")
+  labs(title = "Mg++",
+       subtitle = "Deviation from the mean (mean = 14,60 mg/L)")
 Mg_map
 
-Na100_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+Na100_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Na..100g), color = I("black"), fill = as.factor(sign(Na..100g)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Na+/100g")
+  labs(title = "Na+/100g",
+       subtitle = "Deviation from the mean (mean = 7,56 mg/L)")
 Na100_map
 
-K_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+K_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(K.), color = I("black"), fill = as.factor(sign(K.)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("K+")
+  labs(title = "K+",
+       subtitle = "Deviation from the mean (mean = 1,50 mg/L)")
 K_map
 
-Conduc_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+Conduc_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Conduc), color = I("black"), fill = as.factor(sign(Conduc)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Conductivity")
+  labs(title = "Conductivity",
+       subtitle = "Deviation from the mean (mean = 11,40)")
 Conduc_map
 
-Reten_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+Reten_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Reten_Capa), color = I("black"), fill = as.factor(sign(Reten_Capa)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Retention Capacity")
+  labs(title = "Retention Capacity",
+       subtitle = "Deviation from the mean (mean = 38,55)")
 Reten_map
 
-NaL_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+NaL_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Na..l), color = I("black"), fill = as.factor(sign(Na..l)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Na+/l")
+  labs(title = "Na+/l",
+       subtitle = "Deviation from the mean (mean = 63,94)")
 NaL_map
 
-Altitude_map <- ggplot(stations_mil_deviated, aes(x=x, y=y, label=rownames(stations_mil_deviated))) + 
+Altitude_map <- ggplot(stations_env_deviated, aes(x=x, y=y, label=rownames(stations_env_deviated))) + 
   geom_point(shape=21, aes(size=abs(Altitude), color = I("black"), fill = as.factor(sign(Altitude)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Altitude")
+  labs(title = "Altitude",
+       subtitle = "Deviation from the mean (mean = 3,20)")
 Altitude_map
 
 
