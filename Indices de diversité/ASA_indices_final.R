@@ -47,7 +47,7 @@ flogab.bin <- nb2listw(graph2nb(flo.gab), style="B", zero.policy=TRUE) # Gabriel
 flogab.std <- nb2listw(graph2nb(flo.gab), style="W", zero.policy=TRUE) # Gabriel method with standardized formula
 
 
-# Calculation if Simpson Index
+# Calculation of Simpson Index
 Simpson=function(l){
   N=sum(l)
   Si = 0
