@@ -1,5 +1,5 @@
 
-################################### pRDA ####################################
+################################### RDA ####################################
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -74,3 +74,28 @@ decoup_asso <- (t(asso))
 
 s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = brewer.pal(n=7, name = 'Set2'), col2 = brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""))
 title(main = "RDA with group of association")
+
+
+
+################################### pRDA ####################################
+
+prda_VG_vegan <- rda(flo, miltri,coord) # pRDA
+prda_VG_vegan
+
+anova.cca(prda_VG_vegan)  # test 
+
+prda_VG_vegan$CCA$v # contribution
+prda_VG_vegan$CCA$biplot # correlation entre les var
+
+
+MVA.synt(prda_VG_vegan)
+plot(prda_VG_vegan, scaling=1)
+plot(prda_VG_vegan, scaling=2)
+
+# scaling 2 
+plot(prda_VG_vegan, type="n")
+text(prda_VG_vegan, col="blue",cex = 0.75) # station
+text(prda_VG_vegan, dis="cn",col="black",cex = 1.2) # environnement
+text(prda_VG_vegan, "species", col="red", cex=0.8) # species
+#interprete the results
+
