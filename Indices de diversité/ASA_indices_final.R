@@ -48,6 +48,12 @@ flogab.std <- nb2listw(graph2nb(flo.gab), style="W", zero.policy=TRUE) # Gabriel
 
 
 # Calculation of Simpson Index
+# Index which estimate 2 individuals taken randomly are from the same species
+# We take 1-Simpson Index to have an intuitive measure of the diversity (when it is equal to 1, there is a maximum of 
+# diversity (equal repartition of individuals between the species)
+# when it's equal to 0, the diversity is minimum (1 or a little number of species have all the effectives, when the other species
+# have only 1 or some individuals)
+# Index directly representative of the heterogeneity
 Simpson=function(l){
   N=sum(l)
   Si = 0
@@ -96,6 +102,7 @@ locm.simpson[lm.simpson[,5]<0.05,]
 # These 8 stations have positive spatial autocorrelation
 
 #calculation of Shannon index
+# Index usually calculate to estimate the diversity
 Shannon=function(l){
   H=rep(0,nrow(l))
   for (i in 1:nrow(l)){
@@ -110,7 +117,9 @@ Shannon=function(l){
 
 sh_flo=Shannon(flo)
 
-#calculation of Pielou Index
+# calculation of Pielou Index
+# The Index has values from 0 to 1, when Shannon Index has values from 0 to log(number of species)
+# So 1 is a mean of a maximum diversity
 Pielou=function(f){
   H=Shannon(f)
   I=rep(0,length(H))
@@ -198,8 +207,10 @@ locm.rich[locm.rich[,5]<0.05,]
 # 6, 24, 43, 44, 45, 46, 53, 54, 55, 65
 
 
-#Calculation of Hill Index
-
+# Calculation of Hill Index
+# While Shannon Index is sensible to rare species, and Simpson Index to abundant species, Hill Index is a
+# mathematical relation between these index.
+# So It "neutralizes" the sensibility of each index : It's a more synthetic index of the diversity
 Hill=function(f){
   sh=Shannon(f)
   si=Simpson(f)
