@@ -137,25 +137,33 @@ legend(x= 4.5,y = -0.5,legend = c("C1","C2","C3","C4","C5","C6","C7"),col = brew
 CA_flo #already done before
 PCA_coinertia_env <- dudi.pca(data_PCA, row.w = CA_flo$lw, scannf = FALSE, nf = 2) #weight the PCA row with the CA row weights
 coi <- coinertia(PCA_coinertia_env, CA_flo, scannf = FALSE, nf=2) #selection of 2 axis
-coi
+coi # we read the RV coefficient :  0.289
 
 randtest(coi,nrepet=1000)
-plot(randtest(coi), main = "Monte-Carlo test") #the coinertia analysis is significant
+plot(randtest(coi), main = "Monte-Carlo test") # the coinertia analysis is significant
 
 
 iner=inertia.dudi(coi,col.inertia=T,row.inertia=T)
 iner
+# The first axis represents 64.43 % of the coinertia, and the second axis 12.37 %
 
 #In particular : 
-abscoiE=iner$col.abs #get the absolute contribution of each environmental variable on each axis
+abscoiE = iner$col.abs #get the absolute contribution of each environmental variable on each axis
 abscoiE
-selectE=rbind(abscoiE[abscoiE[,1]>(100/10),], abscoiE[abscoiE[,2]>(100/10),]) #variable which contributes the most to the axis (threshold of 10%)
-selectE
+selectE = rbind(abscoiE[abscoiE[,1]>(100/10),], abscoiE[abscoiE[,2]>(100/10),]) #variable which contributes the most to the axis (threshold of 10%)
+selectE = selectE[-7,] # we get rid of the seventh line because K+ contributes to axis 1 and 2 and appears two times in the selected varaibles
+selectE 
+# Six variables contribute to the first axis with a threshold of 10% : K2O, Na+/100g, K+,  Conduc  on the right part, and Altitude on the left part
+# Four variables contribute to this second axis with a threshold of 10% :K+ on the top part, and Limon, Capa_Reten on the bottom part
+
 
 abscoiS=iner$row.abs #get the absolute contribution of each species on each axis
 abscoiS
 selectS=rbind(abscoiS[abscoiS[,1]>5,], abscoiS[abscoiS[,2]>5,]) #species which contributes the most to the axis (threshold of 5%)
 selectS
+# Six species contribute to the first axis with a threshold of 5% : E1 E2 E11  on the right part, and E21 E43 E47 on the left part
+# Six species contribute to the second axis with a threshold of 5% : E1 E2 E21  on the top part, and E11 E9 E19 on the bottom part
+
 
 plot(coi)
 
@@ -184,4 +192,4 @@ asso <- assoc %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
 s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = c(1:7), col2 = c(1:7), label = c("","","","","","",""))
-title(main = "Coinertia with association group")
+title(main = "Coinertia with association groups")
