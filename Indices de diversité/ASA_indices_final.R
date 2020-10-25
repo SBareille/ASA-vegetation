@@ -263,12 +263,21 @@ locm.hill[locm.hill[,5]<0.05,]
 # 10 stations have a significant positive value of local index (Pr(z>0)<0.05):
 # 6, 24, 43, 44, 45, 46, 53, 54, 55, 65
 
+# Spatial representation of Specific Richness
+stations_rich=cbind(coord, RichnessFlo)
+rich_map <- ggplot(stations_rich, aes(x=x, y=y, label=rownames(stations_rich))) + 
+  geom_point(shape=21, aes(size=abs(RichnessFlo), color = I("black"), fill = as.factor(sign(RichnessFlo)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Specific Richness")
+
+rich_map
 
 # Spatial representation of Hill Index
+stations_Hill=cbind(coord, H)
 Hill_map <- ggplot(stations_Hill, aes(x=x, y=y, label=rownames(stations_Hill))) + 
   geom_point(shape=21, aes(size=abs(H), color = I("black"), fill = as.factor(sign(H)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Indice de Hill")
+  ggtitle("Hill Index")
 
 Hill_map
 
