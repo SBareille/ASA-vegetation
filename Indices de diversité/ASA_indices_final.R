@@ -212,8 +212,8 @@ locm.rich[locm.rich[,5]<0.05,]
 # 66    4.764983 -0.04166667 3.8027496 2.464868 3.426598e-02
 # 89    2.327864 -0.01041667 0.9810745 2.360726 1.823918e-02
 
-# 10 stations have a significant positive value of local index (Pr(z>0)<0.05):
-# 6, 24, 43, 44, 45, 46, 53, 54, 55, 65
+# 7 stations have a significant positive value of local index (Pr(z>0)<0.05):
+# 43, 44, 45, 53, 65, 66, 89
 
 
 # Calculation of Hill Index
@@ -283,9 +283,9 @@ Hill_map
 
 
 # Graphic representation of the stations with a significant positive value of local index for Hill Index and Specific Richness
-stations <- c('6','24','43','44','45','46','53','54','55','65')
+stations <- c('43','44','45','46','53','65')
 stations_name <- as.data.frame(stations)
-stations_assoc <- cbind(stations_name, coord[c(6,24,43,44,45,46,53,54,55,65),])
+stations_assoc <- cbind(stations_name, coord[c(43,44,45,46,53,65),])
 stations_assoc
 #map
 stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(stations_assoc))) + 
