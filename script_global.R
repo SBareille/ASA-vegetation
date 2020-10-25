@@ -206,9 +206,9 @@ title(main = "CA on species occurence with association groups (after Hellinger t
 
 ######### Second approach : chi square followed by a PCA on the Species occurrence table (with stations, and then associations) ###########
 
-flo <- decostand(flo, "chi.square") # known for a better representation of rare species
+flo_chi <- decostand(flo, "chi.square") # known for a better representation of rare species
 
-PCA_flo <- dudi.pca(flo, scannf = FALSE, nf = 2) # we keep two axis
+PCA_flo <- dudi.pca(flo_chi, scannf = FALSE, nf = 2) # we keep two axis
 summary(PCA_flo) # The first axis represents 8,60% of the total inertia, and the second axis 7,43%. This is less than with hellinger+CA
 PCA_flo$eig # Gross eigen values of axis
 PCA_pourcent <- PCA_flo$eig*100/sum(PCA_flo$eig) # Pourcentages of eigen values of axis
