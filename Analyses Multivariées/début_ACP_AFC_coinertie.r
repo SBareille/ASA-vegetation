@@ -184,5 +184,5 @@ asso <- assoc %>%
   ) %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
-s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = c(1:7), col2 = c(1:7), label = c("","","","","","",""))
+s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = brewer.pal(n=7, name = 'Set2'), col2 = brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""))
 title(main = "Coinertia with association group")
