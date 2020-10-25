@@ -1,3 +1,7 @@
+########################################################################
+######## Diversity and richness Index and spatial autocorrelation ######
+########################################################################
+
 library(ade4)
 library(spdep)
 library(tripack)
