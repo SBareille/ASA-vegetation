@@ -198,7 +198,7 @@ decoup_asso <- (t(asso)) # ligns become colomns and colomns become ligns
 #s.label(CA_flo$li) # station with CA
 s.label(CA_flo$co[c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,17,18,19,23,26,37,38,40,41,43,44,45,46,47,48),]) # species that contributes significantly to axis1 and 2
 s.class(CA_flo$li,as.factor(decoup_asso), col=c(2,6,3,4,5,1,8), label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # add group of associations.
-title(main = "CA with association groups (after Hellinger transformation)") # add title
+title(main = "CA on species occurence with association groups (after Hellinger transformation)") # add title
 # We can see which species characterize which associations ! 
 # For example : specie E2 caracterize association n°1. 
 # It is in adequation with the classification made by the phytosociologists : E2=Sciprus littoralis,   Class 1= facies Sciprus littoralis
@@ -229,7 +229,7 @@ s.corcircle(PCA_flo$co[c(1,3,4,5,6,8,10,11,12,13,15,17,18,20,23,24,25,26,27,33,3
 #  we want to see vegetal associations on the graph to study the species repartition on them
 s.label(PCA_flo$li) # station with PCA
 s.class(PCA_flo$li,as.factor(decoup_asso), col=c(2,6,3,4,5,1,8), label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # add group of associations.
-title(main = "PCA on  with association groups (after chi-square transformation)") # add title
+title(main = "PCA on species occurence table with association groups (after chi-square transformation)") # add title
 # Similarly to we can see which species characterize which associations. 
 # But because it is cocircle and not label on the same graph it is a bit more difficult to read
 # The good thing is that the guttman effect has disappeared
