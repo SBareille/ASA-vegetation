@@ -72,7 +72,7 @@ asso <- assoc %>%
   select(group)
 decoup_asso <- (t(asso))
 
-s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = brewer.pal(n=7, name = 'Set2'), col2 = brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""))
+s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = c(2,6,3,4,5,1,8), col2 = c(2,6,3,4,5,1,8), label = c("","","","","","",""))
 title(main = "RDA with group of association")
 
 
