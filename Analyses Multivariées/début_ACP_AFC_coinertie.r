@@ -69,7 +69,7 @@ asso <- assoc %>%
 decoup_asso <- (t(asso)) # ligns become colomns and colomns become ligns
 
 s.label(CA_flo$co[c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,17,18,19,23,26,37,38,40,41,43,44,45,46,47,48),]) # specis (significant axes1 and 2) with CA
-s.class(CA_flo$li,as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # add group of associations.
+s.class(CA_flo$li,as.factor(decoup_asso), col=c(2,6,3,4,5,1,8), label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # add group of associations.
 title(main = "CA with association groups") # add title
 
 
@@ -127,7 +127,7 @@ row.names(iner_PCA_env$col.abs)[which(iner_PCA_env$col.abs[,2] > threshold_PCA)]
 #  we want to see see vegetal associations on the graph to study the effect of environmental variables on them
 
 
-s.class(PCA_env$li, as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("C1","C2","C3","C4","C5","C6","C7")) # group of associations. decoup_asso has been created for CA
+s.class(PCA_env$li, as.factor(decoup_asso), col=c(2,6,3,4,5,1,8), label = c("C1","C2","C3","C4","C5","C6","C7")) # group of associations. decoup_asso has been created for CA
 title(main = "PCA with association group") # add title
 
 s.class(PCA_env$li, as.factor(decoup_asso), col=c("blue","blue","blue","green","green","orange","orange"), label = c("C1","C2","C3","C4","C5","C6","C7")) # color = soil type
@@ -184,5 +184,5 @@ asso <- assoc %>%
   ) %>%
   select(group)
 decoup_asso <- (t(asso)) # passe les lignes deviennent colonnes et colonne deviennent lignes
-s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = brewer.pal(n=7, name = 'Set2'), col2 = brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""))
+s.match.class(coi$mX, coi$mY,as.factor(decoup_asso), col1 = c(2,6,3,4,5,1,8), col2 = c(2,6,3,4,5,1,8), label = c("","","","","","",""))
 title(main = "Coinertia with association group")
