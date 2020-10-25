@@ -289,6 +289,8 @@ stations_assoc <- cbind(stations_name, coord[c(6,24,43,44,45,46,53,54,55,65),])
 stations_assoc
 #map
 stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(stations_assoc))) + 
+  xlim(c(0,max(xy[,1]))) +
+  ylim(c(0,max(xy[,2]))) +
   geom_text() + 
   scale_color_brewer(palette = "Set2") +
   geom_label(size=8) +
