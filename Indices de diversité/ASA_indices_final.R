@@ -76,7 +76,7 @@ moran.test(data$SimFlo, flogab.bin, zero.policy=TRUE)
 # alternative hypothesis: greater
 # sample estimates:
 #   Moran I statistic       Expectation          Variance 
-# 0.397659906      -0.011494253       0.003933059 
+#         0.397659906      -0.011494253       0.003933059 
 
 # p<0.05 => there is significant global spatial autocorrelation on Simpson Index
 # Moran I statistic with binary method is greater than standardized method (0.397>0.368) => we will keep binary method
