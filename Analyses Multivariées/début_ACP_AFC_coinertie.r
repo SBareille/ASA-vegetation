@@ -32,7 +32,7 @@ s.label(CA_flo$co) # Species display
 iner_CA_flo <- inertia.dudi(CA_flo, col.inertia = TRUE, row.inertia = TRUE)
 iner_CA_flo$col.abs # Absolute contribution of species on axis
 
-threshold_CA<-1/min(c(nrow(flo),ncol(CA_flo)))*100 # ordinarily used for CA
+threshold_CA<-1/min(c(nrow(flo),ncol(flo)))*100 # ordinarily used for CA
 threshold_CA
 
 row.names(iner_CA_flo$col.abs)[which(iner_CA_flo$col.abs[,1] > threshold_CA)] # Species which contribute the most to axis 1
@@ -68,10 +68,10 @@ asso <- assoc %>%
   select(group)
 decoup_asso <- (t(asso)) # ligns become colomns and colomns become ligns
 
-#s.label(CA_flo$li) # station with CA
-s.class(CA_flo$li,as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""), add.plot=T) # add group of associations.
+s.label(CA_flo$co[c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,17,18,19,23,26,37,38,40,41,43,44,45,46,47,48),]) # specis (significant axes1 and 2) with CA
+s.class(CA_flo$li,as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("C1","C2","C3","C4","C5","C6","C7"), add.plot=T) # add group of associations.
 title(main = "CA with association groups") # add title
-legend(x= 1,y = 1,legend = c("C1","C2","C3","C4","C5","C6","C7"),col=brewer.pal(n=7, name = 'Set2'), pch = 1) # add legend
+
 
 ############## PCA on environmental variables (with stations, and then associations) #########
 
@@ -126,11 +126,12 @@ row.names(iner_PCA_env$col.abs)[which(iner_PCA_env$col.abs[,2] > threshold_PCA)]
 
 #  we want to see see vegetal associations on the graph to study the effect of environmental variables on them
 
-s.label(PCA_env$li, ) # station with PCA
-s.class(PCA_env$li, as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("","","","","","","") , add.plot = TRUE) # add group of associations. decoup_asso has been created for CA
-title(main = "PCA with association group") # add title
-legend(x= 4.5,y = -0.5,legend = c("C1","C2","C3","C4","C5","C6","C7"),col = brewer.pal(n=7, name = 'Set2'), pch = 1) # add legend
 
+s.class(PCA_env$li, as.factor(decoup_asso), col=brewer.pal(n=7, name = 'Set2'), label = c("C1","C2","C3","C4","C5","C6","C7")) # group of associations. decoup_asso has been created for CA
+title(main = "PCA with association group") # add title
+
+s.class(PCA_env$li, as.factor(decoup_asso), col=c("blue","blue","blue","green","green","orange","orange"), label = c("C1","C2","C3","C4","C5","C6","C7")) # color = soil type
+title(main = "PCA with association group") # add title
 
 
 #############  coinertia  ####################
