@@ -31,8 +31,8 @@ test_rda
 #we have some values greater than ten -> select some variables
 rda_VG_vegan <- rda(flo~., miltri)
 ordistep(rda_VG_vegan, perm.max=500)
-#we keep : Mg, K+, Capa_Reten, Altitude
-selected <- miltri[,c("Mg..", "K.", "Capa_Reten", "Altitude")]
+#we keep : Mg++, K+, RetentionCapacity, Altitude
+selected <- miltri[,c("Mg..", "K.", "RetentionCapacity", "Altitude")] 
 rda_VG_vegan <- rda(flo,selected)
 test_rda <- vif.cca(rda_VG_vegan) 
 test_rda
@@ -72,5 +72,5 @@ asso <- assoc %>%
   select(group)
 decoup_asso <- (t(asso))
 
-s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = c(1:7), col2 = c(1:7), label = c("","","","","","",""))
+s.match.class(rda_VG_ade4$ls,rda_VG_ade4$li, as.factor(decoup_asso), col1 = brewer.pal(n=7, name = 'Set2'), col2 = brewer.pal(n=7, name = 'Set2'), label = c("","","","","","",""))
 title(main = "RDA with group of association")
