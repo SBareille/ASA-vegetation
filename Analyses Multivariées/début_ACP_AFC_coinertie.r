@@ -128,7 +128,7 @@ title(main = "PCA on environmental variables with association group") # add titl
 s.class(PCA_env$li, as.factor(decoup_asso), col=c("blue","blue","blue","green","green","orange","orange"), label = c("C1","C2","C3","C4","C5","C6","C7")) # color = soil type
 title(main = "PCA on environmental variables with association group") # add title
 # We distinguish 2 ensembles : in blue C1, C2, C3 in humid zone, with a soil of low granulometry, VS in yellow C6, C7 with a sandy soil
-# Class C4 and C5 make the transition 
+# Class C4 and C5 make the transition
 
 
 #############  coinertia  ####################
