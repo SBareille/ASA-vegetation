@@ -48,6 +48,12 @@ flogab.std <- nb2listw(graph2nb(flo.gab), style="W", zero.policy=TRUE) # Gabriel
 
 
 # Calculation of Simpson Index
+# Index which estimate 2 individuals taken randomly are from the same species
+# We take 1-Simpson Index to have an intuitive measure of the diversity (when it is equal to 1, there is a maximum of 
+# diversity (equal repartition of individuals between the species)
+# when it's equal to 0, the diversity is minimum (1 or a little number of species have all the effectives, when the other species
+# have only 1 or some individuals)
+# Index directly representative of the heterogeneity
 Simpson=function(l){
   N=sum(l)
   Si = 0
@@ -70,9 +76,18 @@ moran.test(data$SimFlo, flogab.bin, zero.policy=TRUE)
 # alternative hypothesis: greater
 # sample estimates:
 #   Moran I statistic       Expectation          Variance 
-# 0.397659906      -0.011494253       0.003933059 
+#         0.397659906      -0.011494253       0.003933059 
 
 # p<0.05 => there is significant global spatial autocorrelation on Simpson Index
+
+moran.test(data$SimFlo, flogab.std, zero.policy=TRUE)
+
+# Moran I statistic standard deviate = 5.156, p-value = 1.262e-07
+# alternative hypothesis: greater
+# sample estimates:
+#   Moran I statistic       Expectation          Variance 
+#         0.368299074      -0.011494253       0.005425926 
+
 # Moran I statistic with binary method is greater than standardized method (0.397>0.368) => we will keep binary method
 
 
@@ -96,6 +111,7 @@ locm.simpson[lm.simpson[,5]<0.05,]
 # These 8 stations have positive spatial autocorrelation
 
 #calculation of Shannon index
+# Index usually calculate to estimate the diversity
 Shannon=function(l){
   H=rep(0,nrow(l))
   for (i in 1:nrow(l)){
@@ -110,7 +126,9 @@ Shannon=function(l){
 
 sh_flo=Shannon(flo)
 
-#calculation of Pielou Index
+# calculation of Pielou Index
+# The Index has values from 0 to 1, when Shannon Index has values from 0 to log(number of species)
+# So 1 is a mean of a maximum diversity
 Pielou=function(f){
   H=Shannon(f)
   I=rep(0,length(H))
@@ -194,12 +212,14 @@ locm.rich[locm.rich[,5]<0.05,]
 # 66    4.764983 -0.04166667 3.8027496 2.464868 3.426598e-02
 # 89    2.327864 -0.01041667 0.9810745 2.360726 1.823918e-02
 
-# 10 stations have a significant positive value of local index (Pr(z>0)<0.05):
-# 6, 24, 43, 44, 45, 46, 53, 54, 55, 65
+# 7 stations have a significant positive value of local index (Pr(z>0)<0.05):
+# 43, 44, 45, 53, 65, 66, 89
 
 
-#Calculation of Hill Index
-
+# Calculation of Hill Index
+# While Shannon Index is sensible to rare species, and Simpson Index to abundant species, Hill Index is a
+# mathematical relation between these index.
+# So It "neutralizes" the sensibility of each index : It's a more synthetic index of the diversity
 Hill=function(f){
   sh=Shannon(f)
   si=Simpson(f)
@@ -243,23 +263,34 @@ locm.hill[locm.hill[,5]<0.05,]
 # 10 stations have a significant positive value of local index (Pr(z>0)<0.05):
 # 6, 24, 43, 44, 45, 46, 53, 54, 55, 65
 
+# Spatial representation of Specific Richness
+stations_rich=cbind(coord, RichnessFlo)
+rich_map <- ggplot(stations_rich, aes(x=x, y=y, label=rownames(stations_rich))) + 
+  geom_point(shape=21, aes(size=abs(RichnessFlo), color = I("black"), fill = as.factor(sign(RichnessFlo)))) +
+  scale_fill_manual(values = c("white", "black")) +
+  ggtitle("Specific Richness")
+
+rich_map
 
 # Spatial representation of Hill Index
+stations_Hill=cbind(coord, H)
 Hill_map <- ggplot(stations_Hill, aes(x=x, y=y, label=rownames(stations_Hill))) + 
   geom_point(shape=21, aes(size=abs(H), color = I("black"), fill = as.factor(sign(H)))) +
   scale_fill_manual(values = c("white", "black")) +
-  ggtitle("Indice de Hill")
+  ggtitle("Hill Index")
 
 Hill_map
 
 
 # Graphic representation of the stations with a significant positive value of local index for Hill Index and Specific Richness
-stations <- c('6','24','43','44','45','46','53','54','55','65')
+stations <- c('43','44','45','46','53','65')
 stations_name <- as.data.frame(stations)
-stations_assoc <- cbind(stations_name, coord[c(6,24,43,44,45,46,53,54,55,65),])
+stations_assoc <- cbind(stations_name, coord[c(43,44,45,46,53,65),])
 stations_assoc
 #map
 stations_assoc_map <- ggplot(stations_assoc, aes(x=x, y=y, label=rownames(stations_assoc))) + 
+  xlim(c(0,max(xy[,1]))) +
+  ylim(c(0,max(xy[,2]))) +
   geom_text() + 
   scale_color_brewer(palette = "Set2") +
   geom_label(size=8) +
